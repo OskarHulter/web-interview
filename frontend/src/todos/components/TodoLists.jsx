@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react'
+import React from 'react'
 import {
   Card,
   CardContent,
@@ -10,39 +10,33 @@ import {
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
-import { fetchTodoLists } from '../../data-access'
+//import { useStore } from '../hooks/useStore'
+import { useTodoLists } from '../hooks/useTodoLists'
+
 
 // Main Task
-// Persist the todo lists on the server. Persisting in a database is not required. (Simple js structures on the server is fine). If you do go for an actual DB (again not required), be sure to include instructions of how to get it up and running.
+// Persist the todo lists on the server.
+// * Mostly done
 
 // Additional tasks
 // Don't require users to press save when an item is added/edited in the todo list. (Autosave functionality)
-// Make it possible to indicate that a todo is completed.
-// Indicate that a todo list is completed if all todo items within are completed.
-// Add a date for completion to todo items. Indicate how much time is remaining or overdue.
 
+// Make it possible to indicate that a todo is completed.
+// * Done
+
+// Indicate that a todo list is completed if all todo items within are completed.
+// ! .length
+
+
+// Add a date for completion to todo items. Indicate how much time is remaining or overdue.
+// ! Intl.
 
 export const TodoLists = ({ style }) => {
-  const fetchData = useCallback(async () => {
-  const data = await fetchTodoLists()
-
-  setTodoLists(data)
-}, [])
-
-  useEffect(() => {
-    try {
-    fetchData()
-    } catch(e) {
-      console.error(e)
-  }
-}, [fetchData])
-  const [todoLists, setTodoLists] = useState({})
-  const [activeList, setActiveList] = useState()
-
-
+  const { todoLists, activeList, setActiveList, saveTodoList } = useTodoLists()
+  React.useEffect(()=> {console.log(activeList)}, [activeList])
   if (!Object.keys(todoLists).length) return null
   return (
-    <Fragment>
+    <>
       <Card style={style}>
         <CardContent>
           <Typography component='h2'>My Todo Lists</Typography>
@@ -62,15 +56,9 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList}
           todoList={todoLists[activeList]}
-          saveTodoList={(id, { todos }) => {
-            const listToUpdate = todoLists[id]
-            setTodoLists({
-              ...todoLists,
-              [id]: { ...listToUpdate, todos },
-            })
-          }}
+          saveTodoList={saveTodoList}
         />
       )}
-    </Fragment>
+    </>
   )
 }
