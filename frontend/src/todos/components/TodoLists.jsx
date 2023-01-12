@@ -10,30 +10,25 @@ import {
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
-//import { useStore } from '../hooks/useStore'
-import { useTodoLists } from '../hooks/useTodoLists'
-
-
-// Main Task
-// Persist the todo lists on the server.
-// * Mostly done
-
-// Additional tasks
-// Don't require users to press save when an item is added/edited in the todo list. (Autosave functionality)
-
-// Make it possible to indicate that a todo is completed.
-// * Done
-
-// Indicate that a todo list is completed if all todo items within are completed.
-// ! .length
-
-
-// Add a date for completion to todo items. Indicate how much time is remaining or overdue.
-// ! Intl.
+import { fetchTodoLists, updateTodoLists } from '../../data-access/requests'
 
 export const TodoLists = ({ style }) => {
-  const { todoLists, activeList, setActiveList, saveTodoList } = useTodoLists()
-  React.useEffect(()=> {console.log(activeList)}, [activeList])
+  const [activeList, setActiveList] = React.useState()
+  const [todoLists, setTodoLists] = React.useState({})
+
+  const fetchData = React.useCallback(async () => {
+    const data = await fetchTodoLists()
+    setTodoLists(data)
+  }, [])
+
+  React.useEffect(() => {
+    try {
+      fetchData()
+    } catch (e) {
+      console.error(e)
+    }
+  }, [fetchData])
+
   if (!Object.keys(todoLists).length) return null
   return (
     <>
@@ -56,7 +51,14 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList}
           todoList={todoLists[activeList]}
-          saveTodoList={saveTodoList}
+          saveTodoList={(id, { todos }) => {
+            const listToUpdate = todoLists[id]
+            updateTodoLists(todoLists)
+            setTodoLists({
+              ...todoLists,
+              [id]: { ...listToUpdate, todos },
+            })
+          }}
         />
       )}
     </>

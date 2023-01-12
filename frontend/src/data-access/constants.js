@@ -1,2 +1,3 @@
 export const PORT = '3001'
-export const url = `http://localhost:${PORT}`
+const url = `http://localhost:${PORT}`
+export const todoListUrl = `${url}/todolists`

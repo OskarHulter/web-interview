@@ -1,4 +1,5 @@
 
+
 const mockData = {
   '0000000001': {
     id: '0000000001',
@@ -42,7 +43,20 @@ const mockList = [
 export async function fetchMockStore() {
   return mockData
 }
-export async function fetchMockList() {
+async function fetchMockList() {
   return mockList
 }
 
+export const mockFetchTodoLists = async (type) => {
+  if (type === 'list') {
+    const res = await fetchMockList()
+    const data = Object.fromEntries(
+      res.map(todoList => [todoList.id, { ...todoList }])
+    )
+
+    return data
+  } else {
+    const data = await fetchMockStore()
+    return data
+  }
+}
