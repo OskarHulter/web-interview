@@ -7,7 +7,7 @@
     "lint": "eslint --ext .js src",
     "start": "ts-node src/index.ts",
     "typeorm": "typeorm-ts-node-commonjs",
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon src/index.ts",
     "create": "typeorm migration:create ./src/migration/backendMigration",
     "generate": "typeorm migration:generate -n PostRefactoring -d src/data-source",
     "migrate": "npx typeorm-ts-node-commonjs migration:run -d src/data-source",

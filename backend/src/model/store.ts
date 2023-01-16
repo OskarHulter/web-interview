@@ -1,5 +1,6 @@
-const fs = require('fs')
 const STORE_URL = './db/data.json'
+import * as fs from 'fs'
+
 
 export const store = {
   todoLists: [],
@@ -8,9 +9,8 @@ export const store = {
 }
 
 export async function setStore(content) {
-  const data = JSON.stringify(content)
   try {
-    await fs.writeFile(STORE_URL, data, (err) => { if (err) throw err })
+    await fs.writeFile(STORE_URL, content, (err) => { if (err) throw err })
     console.log('updated successfully!')
   } catch (err) {
     console.log(err)
